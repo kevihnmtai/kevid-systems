@@ -1,346 +1,98 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kevid Systems | Customer Hub</title>
-<style>
-:root {
-  --bg: #0b1220;
-  --panel: #121d30;
-  --panel2: #1b2a40;
-  --text: #eef4ff;
-  --muted: #9fb0c9;
-  --green: #48d6a3;
-  --border: #2a3a54;
-}
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font: 15px/1.5 Arial, sans-serif;
-}
-button, input, textarea { font: inherit; }
-button { cursor: pointer; }
-.layout { display: flex; min-height: 100vh; }
-.sidebar {
-  width: 225px;
-  background: var(--panel);
-  border-right: 1px solid var(--border);
-  padding: 24px 15px;
-}
-.brand { font-size: 20px; font-weight: bold; margin-bottom: 35px; }
-.brand span { color: var(--green); }
-nav button {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 12px;
-  margin: 5px 0;
-  border: 0;
-  border-radius: 9px;
-  background: transparent;
-  color: var(--muted);
-}
-nav button:hover, nav button.active {
-  background: var(--panel2);
-  color: var(--green);
-}
-main { flex: 1; padding: 30px; min-width: 0; }
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 28px;
-}
-h1 { margin: 0 0 5px; font-size: 28px; }
-p { color: var(--muted); margin-top: 5px; }
-.badge {
-  padding: 7px 12px;
-  border: 1px solid var(--border);
-  border-radius: 30px;
-  color: var(--green);
-  font-size: 12px;
-}
-.cards {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 15px;
-  margin-bottom: 22px;
-}
-.card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 20px;
-  margin-bottom: 15px;
-}
-.label, .muted { color: var(--muted); font-size: 13px; }
-.number { font-size: 30px; font-weight: bold; margin-top: 10px; }
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 15px;
-}
-.btn {
-  background: var(--green);
-  color: #07251b;
-  border: 0;
-  padding: 10px 15px;
-  border-radius: 9px;
-  font-weight: bold;
-}
-.btn.secondary {
-  background: var(--panel2);
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-.field {
-  display: block;
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0 15px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  color: var(--text);
-}
-label { color: var(--muted); font-size: 13px; }
-.row {
-  padding: 13px 0;
-  border-top: 1px solid var(--border);
-}
-.chat {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  padding: 12px;
-  border-radius: 10px;
-  min-height: 120px;
-  margin: 12px 0;
-}
-.bubble {
-  background: var(--panel2);
-  padding: 10px;
-  border-radius: 10px;
-  margin: 8px 0;
-  overflow-wrap: anywhere;
-}
-.bubble.reply { border-left: 3px solid var(--green); }
-.page { display: none; }
-.page.active { display: block; }
-.notice {
-  padding: 12px;
-  border: 1px solid #62502c;
-  border-radius: 10px;
-  color: #f5d99b;
-  background: #292317;
-  font-size: 13px;
-}
-footer { color: var(--muted); font-size: 12px; margin-top: 25px; }
-@media(max-width: 750px) {
-  .layout { display: block; }
-  .sidebar { width: 100%; padding: 15px; }
-  .brand { margin-bottom: 12px; }
-  nav { display: grid; grid-template-columns: repeat(3, 1fr); }
-  nav button { text-align: center; padding: 9px 3px; font-size: 12px; }
-  main { padding: 18px 12px; }
-  .cards, .grid { grid-template-columns: 1fr; }
-  header { align-items: flex-start; }
-}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>Workspace | Kevid Systems</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script defer src="app.js"></script>
 </head>
-<body>
-<div class="layout">
-<aside class="sidebar">
-  <div class="brand">KEVID <span>SYSTEMS</span></div>
-  <nav>
-    <button class="active" data-page="dashboard">▦ Dashboard</button>
-    <button data-page="automation">⚡ Automations</button>
-    <button data-page="inbox">💬 Inbox</button>
-    <button data-page="contacts">♙ Contacts</button>
-    <button data-page="website">🌐 Website Chat</button>
-    <button data-page="settings">⚙ Settings</button>
-  </nav>
-</aside>
-
-<main>
-<section class="page active" id="dashboard">
-<header>
-  <div>
-    <h1>Customer Hub</h1>
-    <p>Manage conversations and automate customer support.</p>
+<body class="app-page">
+  <div id="app-loading" class="loading-screen"><span class="spinner"></span><p>Loading your workspace…</p></div>
+  <div id="app" class="app-layout hidden">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="index.html"><span class="brand-mark">K</span><span>kevid<span class="brand-light">systems</span></span></a>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="side-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-view="overview"><span>▦</span> Overview</button>
+        <button class="nav-item" data-view="contacts"><span>♙</span> Contacts</button>
+        <button class="nav-item" data-view="conversations"><span>☷</span> Conversations</button>
+        <button class="nav-item" data-view="automations"><span>↯</span> Automations</button>
+        <button class="nav-item" data-view="settings"><span>⚙</span> Settings</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="status-dot"></div><span>Workspace connected</span>
+      </div>
+    </aside>
+    <div class="main-column">
+      <header class="topbar">
+        <button id="mobile-menu" class="icon-button mobile-only" aria-label="Open navigation">☰</button>
+        <div><div class="topbar-kicker">KEVID SYSTEMS</div><div class="topbar-title" id="page-title">Overview</div></div>
+        <div class="account-area">
+          <div class="avatar" id="user-avatar">K</div>
+          <div class="account-copy"><strong id="user-email">Account</strong><span>Workspace member</span></div>
+          <button id="logout-button" class="button button-outline button-small" type="button">Sign out</button>
+        </div>
+      </header>
+      <main class="content">
+        <div id="global-notice" class="notice hidden" role="status" aria-live="polite"></div>
+        <section class="view" id="view-overview">
+          <div class="page-intro"><div><div class="eyebrow">YOUR WORKSPACE</div><h1>Good to have you back.</h1><p class="muted">Manage customer details, conversations and automation rules in one place.</p></div></div>
+          <div class="stats-grid">
+            <article class="stat-card"><span class="stat-label">Total contacts</span><strong id="stat-contacts">—</strong><span class="stat-note">Saved in your workspace</span></article>
+            <article class="stat-card"><span class="stat-label">Conversations</span><strong id="stat-conversations">—</strong><span class="stat-note">Customer conversation records</span></article>
+            <article class="stat-card"><span class="stat-label">Automation rules</span><strong id="stat-rules">—</strong><span class="stat-note">Rules saved to your account</span></article>
+          </div>
+          <div class="section-card">
+            <div class="section-heading"><div><h2>Quick actions</h2><p class="muted">Start with the essentials.</p></div></div>
+            <div class="quick-actions">
+              <button class="quick-action" data-go="contacts"><span class="quick-icon">＋</span><span><strong>Add a contact</strong><small>Save a customer record</small></span><span class="arrow">→</span></button>
+              <button class="quick-action" data-go="conversations"><span class="quick-icon">☷</span><span><strong>View conversations</strong><small>Review saved conversations</small></span><span class="arrow">→</span></button>
+              <button class="quick-action" data-go="automations"><span class="quick-icon">↯</span><span><strong>Set up an automation</strong><small>Create a rule for your workflow</small></span><span class="arrow">→</span></button>
+            </div>
+          </div>
+          <div class="callout"><div><strong>Connect your customer channels</strong><p>WhatsApp and website-chat delivery require their provider credentials and backend integration. This workspace stores records; it does not pretend to send messages before a channel is configured.</p></div></div>
+        </section>
+        <section class="view hidden" id="view-contacts">
+          <div class="page-intro"><div><div class="eyebrow">CUSTOMER DIRECTORY</div><h1>Contacts</h1><p class="muted">Create and manage your customer records.</p></div><button id="add-contact-button" class="button button-primary">＋ Add contact</button></div>
+          <div id="contact-form-card" class="section-card hidden">
+            <div class="section-heading"><div><h2>New contact</h2><p class="muted">Fields marked required must be completed.</p></div></div>
+            <form id="contact-form" class="form-grid">
+              <div><label for="contact-name">Full name *</label><input id="contact-name" required maxlength="120" placeholder="Customer name"></div>
+              <div><label for="contact-email">Email</label><input id="contact-email" type="email" maxlength="254" placeholder="customer@example.com"></div>
+              <div><label for="contact-phone">Phone</label><input id="contact-phone" type="tel" maxlength="40" placeholder="+254…"></div>
+              <div class="form-actions"><button class="button button-primary" type="submit">Save contact</button><button id="cancel-contact" class="button button-outline" type="button">Cancel</button></div>
+            </form>
+          </div>
+          <div class="section-card"><div class="table-tools"><input id="contact-search" class="search-input" type="search" placeholder="Search contacts…" aria-label="Search contacts"></div><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Added</th><th></th></tr></thead><tbody id="contacts-table"></tbody></table></div><div id="contacts-empty" class="empty-state hidden">No contacts yet. Select “Add contact” to create your first record.</div></div>
+        </section>
+        <section class="view hidden" id="view-conversations">
+          <div class="page-intro"><div><div class="eyebrow">CUSTOMER MESSAGES</div><h1>Conversations</h1><p class="muted">Review conversation records saved to your workspace.</p></div></div>
+          <div class="section-card"><div class="table-wrap"><table><thead><tr><th>Subject</th><th>Channel</th><th>Status</th><th>Last updated</th></tr></thead><tbody id="conversations-table"></tbody></table></div><div id="conversations-empty" class="empty-state hidden">No conversations have been recorded yet.</div></div>
+        </section>
+        <section class="view hidden" id="view-automations">
+          <div class="page-intro"><div><div class="eyebrow">WORKFLOW MANAGEMENT</div><h1>Automations</h1><p class="muted">Save rules for workflows you intend to connect.</p></div><button id="add-rule-button" class="button button-primary">＋ New rule</button></div>
+          <div id="rule-form-card" class="section-card hidden"><div class="section-heading"><div><h2>Create automation rule</h2><p class="muted">Rules are saved as configuration; execution requires a connected backend/channel.</p></div></div>
+            <form id="rule-form" class="form-grid">
+              <div><label for="rule-name">Rule name *</label><input id="rule-name" required maxlength="120" placeholder="e.g. Welcome new enquiries"></div>
+              <div><label for="rule-trigger">Trigger *</label><select id="rule-trigger" required><option value="new_contact">New contact</option><option value="incoming_message">Incoming message</option><option value="keyword_match">Keyword match</option></select></div>
+              <div class="full-width"><label for="rule-action">Action description *</label><textarea id="rule-action" required maxlength="1000" rows="3" placeholder="Describe what this rule should do"></textarea></div>
+              <div class="form-actions"><button class="button button-primary" type="submit">Save rule</button><button id="cancel-rule" class="button button-outline" type="button">Cancel</button></div>
+            </form>
+          </div>
+          <div id="rules-list" class="rules-list"></div><div id="rules-empty" class="empty-state section-card hidden">No automation rules yet. Create a rule to save your workflow configuration.</div>
+        </section>
+        <section class="view hidden" id="view-settings">
+          <div class="page-intro"><div><div class="eyebrow">ACCOUNT</div><h1>Settings</h1><p class="muted">Your sign-in and workspace details.</p></div></div>
+          <div class="section-card settings-card"><h2>Signed-in account</h2><p id="settings-email" class="settings-value"></p><p class="muted">Account security and email confirmation settings are managed by Supabase Auth.</p><button id="settings-logout" class="button button-outline" type="button">Sign out</button></div>
+          <div class="section-card"><h2>Connected services</h2><p class="muted">This build connects to Supabase for authentication and workspace data. WhatsApp Business Platform, email delivery, and live website chat need separate provider setup before messages can be sent or received.</p></div>
+        </section>
+      </main>
+      <footer class="app-footer">© <span id="year"></span> Kevid Systems <span>·</span> Customer messaging workspace</footer>
+    </div>
   </div>
-  <span class="badge">DEMO VERSION</span>
-</header>
-<div class="cards">
-  <div class="card"><div class="label">Sample enquiries</div><div class="number" id="enquiries">24</div><div class="muted">Example data only</div></div>
-  <div class="card"><div class="label">Automation rules</div><div class="number" id="ruleCount">1</div><div class="muted">Created in this session</div></div>
-  <div class="card"><div class="label">Channels planned</div><div class="number">2</div><div class="muted">Website chat + WhatsApp</div></div>
-</div>
-<div class="grid">
-  <div class="card">
-    <h3>Recent activity</h3>
-    <div class="row"><strong>Customer enquiry</strong><div class="muted">Asked about business locations</div></div>
-    <div class="row"><strong>Booking request</strong><div class="muted">Needs staff follow-up</div></div>
-    <div class="row"><strong>New conversation</strong><div class="muted">Sample website enquiry</div></div>
-  </div>
-  <div class="card">
-    <h3>Getting started</h3>
-    <p>1. Create an automation rule.</p>
-    <p>2. Test a sample customer message.</p>
-    <p>3. Configure your workspace.</p>
-    <button class="btn" onclick="showPage('automation')">Build automation →</button>
-  </div>
-</div>
-</section>
-
-<section class="page" id="automation">
-<header><div><h1>Automation Builder</h1><p>Define how the system responds to incoming messages.</p></div></header>
-<div class="grid">
-  <div class="card">
-    <h3>Create a rule</h3>
-    <label for="trigger">When the message contains</label>
-    <input class="field" id="trigger" value="hello" placeholder="e.g. hello">
-    <label for="response">Automatic response</label>
-    <textarea class="field" id="response" rows="4">Hello! Welcome to our business. How can we help you today?</textarea>
-    <button class="btn" id="saveRule">Save rule</button>
-    <p id="saveMessage"></p>
-  </div>
-  <div class="card">
-    <h3>Test your automation</h3>
-    <label for="testMessage">Simulated customer message</label>
-    <input class="field" id="testMessage" value="Hello, I need help">
-    <button class="btn secondary" id="testButton">Run test</button>
-    <div class="chat" id="testResult">Your test response will appear here.</div>
-  </div>
-</div>
-<div class="card"><h3>Your rules</h3><div id="rulesList"></div></div>
-</section>
-
-<section class="page" id="inbox">
-<header><div><h1>Customer Inbox</h1><p>Try the sample conversations below.</p></div></header>
-<div class="grid">
-  <div class="card">
-    <h3>Conversations</h3>
-    <div class="row"><strong>Mary</strong><p>Where are you located?</p><button class="btn secondary" onclick="openChat('Mary','Where are you located?')">Open</button></div>
-    <div class="row"><strong>Brian</strong><p>I want to make a booking.</p><button class="btn secondary" onclick="openChat('Brian','I want to make a booking.')">Open</button></div>
-  </div>
-  <div class="card">
-    <h3 id="chatTitle">Conversation</h3>
-    <div class="chat" id="chatBox">Choose a conversation to view it.</div>
-    <label for="agentMessage">Agent reply</label>
-    <input class="field" id="agentMessage" placeholder="Write a sample reply">
-    <button class="btn" onclick="sendReply()">Add reply</button>
-  </div>
-</div>
-</section>
-
-<section class="page" id="contacts">
-<header><div><h1>Contacts</h1><p>Example contacts for the prototype.</p></div></header>
-<div class="card">
-  <div class="row"><strong>Mary W.</strong><p>Interested in service information</p></div>
-  <div class="row"><strong>Brian K.</strong><p>Interested in booking</p></div>
-  <div class="notice">These are fictional contacts. No real customer information is stored.</div>
-</div>
-</section>
-
-<section class="page" id="website">
-<header><div><h1>Website Chat</h1><p>Preview a future chat widget for your customers.</p></div></header>
-<div class="card">
-  <h3>Live preview</h3>
-  <p>Welcome! How can we help you?</p>
-  <div class="chat" id="webChat"><div class="bubble">Hello! Welcome to our demo business.</div></div>
-  <label for="webMessage">Your message</label>
-  <input class="field" id="webMessage" placeholder="Type a message...">
-  <button class="btn" id="sendWeb">Send message</button>
-  <p class="muted">This is a local demonstration, not a live customer support channel.</p>
-</div>
-</section>
-
-<section class="page" id="settings">
-<header><div><h1>Workspace Settings</h1><p>Personalize your demo.</p></div></header>
-<div class="card">
-  <label for="businessName">Business name</label>
-  <input class="field" id="businessName" value="Kevid Systems">
-  <label for="welcome">Welcome message</label>
-  <textarea class="field" id="welcome" rows="3">Hello! Welcome to our business. How can we help?</textarea>
-  <button class="btn" id="saveSettings">Save settings</button>
-  <p id="settingsMessage"></p>
-</div>
-<div class="notice">The WhatsApp API, database, user accounts and server are not connected yet. We'll build those next.</div>
-</section>
-<footer>KEVID SYSTEMS · YOUR PLATFORM, YOUR RULES · PROTOTYPE 0.1</footer>
-</main>
-</div>
-<script>
-const buttons = document.querySelectorAll("nav button");
-const pages = document.querySelectorAll(".page");
-function showPage(id) {
-  pages.forEach(page => page.classList.toggle("active", page.id === id));
-  buttons.forEach(button => button.classList.toggle("active", button.dataset.page === id));
-}
-buttons.forEach(button => button.addEventListener("click", () => showPage(button.dataset.page)));
-
-let rules = [{trigger:"hello", response:"Hello! Welcome to our business. How can we help you today?"}];
-const escapeHTML = text => String(text).replace(/[&<>"']/g, char => ({
-  "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
-}[char]));
-
-function renderRules() {
-  document.getElementById("ruleCount").textContent = rules.length;
-  document.getElementById("rulesList").innerHTML = rules.map((rule, index) =>
-    `<div class="row"><strong>${escapeHTML(rule.trigger)}</strong><p>${escapeHTML(rule.response)}</p><button class="btn secondary" onclick="deleteRule(${index})">Delete</button></div>`
-  ).join("");
-}
-function deleteRule(index) { rules.splice(index, 1); renderRules(); }
-document.getElementById("saveRule").addEventListener("click", () => {
-  const trigger = document.getElementById("trigger").value.trim().toLowerCase();
-  const response = document.getElementById("response").value.trim();
-  if (!trigger || !response) {
-    document.getElementById("saveMessage").textContent = "Enter both a trigger and response.";
-    return;
-  }
-  rules.push({trigger, response});
-  renderRules();
-  document.getElementById("saveMessage").textContent = "Rule added for this demo session.";
-});
-document.getElementById("testButton").addEventListener("click", () => {
-  const message = document.getElementById("testMessage").value;
-  const rule = [...rules].reverse().find(item => message.toLowerCase().includes(item.trigger));
-  document.getElementById("testResult").innerHTML =
-    `<div class="bubble">Customer: ${escapeHTML(message)}</div>` +
-    `<div class="bubble reply">${rule ? escapeHTML(rule.response) : "Sorry, I didn't understand. A team member can help."}</div>`;
-});
-let currentChat = "";
-function openChat(name, message) {
-  currentChat = name;
-  document.getElementById("chatTitle").textContent = name + "'s conversation";
-  document.getElementById("chatBox").innerHTML = `<div class="bubble">${escapeHTML(message)}</div>`;
-}
-function sendReply() {
-  if (!currentChat) { alert("Open a conversation first."); return; }
-  const input = document.getElementById("agentMessage");
-  if (!input.value.trim()) return;
-  document.getElementById("chatBox").insertAdjacentHTML("beforeend", `<div class="bubble reply">${escapeHTML(input.value)}</div>`);
-  input.value = "";
-}
-document.getElementById("sendWeb").addEventListener("click", () => {
-  const input = document.getElementById("webMessage");
-  if (!input.value.trim()) return;
-  const chat = document.getElementById("webChat");
-  chat.insertAdjacentHTML("beforeend", `<div class="bubble">${escapeHTML(input.value)}</div><div class="bubble reply">Thanks for your message! This demo chat isn't connected to a live agent yet.</div>`);
-  input.value = "";
-});
-document.getElementById("saveSettings").addEventListener("click", () => {
-  const name = document.getElementById("businessName").value.trim();
-  document.querySelector(".brand").innerHTML = escapeHTML(name || "Kevid Systems");
-  document.getElementById("settingsMessage").textContent = "Settings updated for this page session.";
-});
-renderRules();
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </body>
 </html>

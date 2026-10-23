@@ -1,172 +1,40 @@
-<!DOCTYPE html><html lang="en">
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kevid Systems | Account</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:#050819;color:#f5f7ff;font-family:Arial,sans-serif}
-.card{width:100%;max-width:440px;padding:28px;border:1px solid #29334c;border-radius:18px;background:#0b1025}
-h1{font-size:27px}
-p{color:#aab6cc;line-height:1.5}
-label{display:block;margin:17px 0 7px}
-input{width:100%;padding:13px;border:1px solid #34425e;border-radius:9px;background:#10172b;color:white;font-size:16px}
-button{width:100%;padding:13px;margin-top:14px;border:0;border-radius:9px;background:#4935d5;color:white;font-size:16px;font-weight:bold}
-button.secondary{background:#23314c}
-button:disabled{opacity:.6}
-#status{overflow-wrap:anywhere;font-size:14px}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>Sign in | Kevid Systems</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script defer src="auth.js"></script>
 </head>
-<body>
-<main class="card">
-<h1>Kevid Systems</h1>
-<p>Sign in or create an account to access your workspace.</p><form id="authForm">
-<label for="email">Email address</label>
-<input id="email" type="email" autocomplete="email" required maxlength="254"><label for="password">Password</label>
-<input id="password" type="password" autocomplete="current-password" minlength="8" required>
-
-<button id="login" type="submit">Sign in</button>
-<button id="signup" class="secondary" type="button">Create account</button>
-
-</form><p id="status" role="status" aria-live="polite">Loading authentication...</p>
-</main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
-(() => {
-  const URL = "https://bkpyzrxxboggqewawxdb.supabase.co";
-  const KEY = "sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2";
-
-  const email = document.getElementById("email");
-  const password = document.getElementById("password");
-  const form = document.getElementById("authForm");
-  const login = document.getElementById("login");
-  const signup = document.getElementById("signup");
-  const status = document.getElementById("status");
-
-  function message(text) {
-    status.textContent = text;
-  }
-
-  if (!window.supabase) {
-    message("ERROR: Supabase library failed to load. Check your internet connection and refresh.");
-    return;
-  }
-
-  if (URL.includes("https://bkpyzrxxboggqewawxdb.supabase.co") || KEY.includes("sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2")) {
-    message("ERROR: ");
-    return;
-  }
-
-  let client;
-
-  try {
-    client = window.supabase.createClient(https://bkpyzrxxboggqewawxdb.supabase.co, sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2);
-  } catch (error) {
-    message("ERROR initializing Supabase: " + error.message);
-    return;
-  }
-
-  function setBusy(busy) {
-    login.disabled = busy;
-    signup.disabled = busy;
-    login.textContent = busy ? "Please wait..." : "Sign in";
-  }
-
-  async function safeRequest(operation) {
-    setBusy(true);
-
-    try {
-      const result = await operation();
-
-      if (result.error) {
-        message("ERROR: " + result.error.message);
-        return null;
-      }
-
-      return result.data;
-    } catch (error) {
-      message("ERROR: " + (error.message || "Request failed. Check your internet connection."));
-      return null;
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  form.addEventListener("submit", async event => {
-    event.preventDefault();
-
-    const address = email.value.trim();
-    const pass = password.value;
-
-    message("Signing in...");
-
-    const data = await safeRequest(() =>
-      client.auth.signInWithPassword({
-        email: address,
-        password: pass
-      })
-    );
-
-    if (!data) return;
-
-    if (!data.session) {
-      message("Sign-in returned no active session. Check your Supabase authentication settings.");
-      return;
-    }
-
-    message("Signed in successfully. Opening dashboard...");
-    window.location.assign("./index.html");
-  });
-
-  signup.addEventListener("click", async () => {
-    const address = email.value.trim();
-    const pass = password.value;
-
-    if (!address || !email.checkValidity()) {
-      message("Enter a valid email address first.");
-      email.focus();
-      return;
-    }
-
-    if (pass.length < 8) {
-      message("Use a password containing at least 8 characters.");
-      password.focus();
-      return;
-    }
-
-    message("Creating your account...");
-
-    const data = await safeRequest(() =>
-      client.auth.signUp({
-        email: address,
-        password: pass,
-        options: {
-          emailRedirectTo: window.location.origin +
-            window.location.pathname.replace(/login\.html$/, "index.html")
-        }
-      })
-    );
-
-    if (!data) return;
-
-    if (data.session) {
-      message("Account created and signed in. Opening dashboard...");
-      window.location.assign("./index.html");
-    } else {
-      message("Registration request completed. If email confirmation is enabled, check your inbox and spam folder. If this address was already registered, use Sign in instead.");
-    }
-  });
-
-  async function checkSession() {
-    const data = await safeRequest(() => client.auth.getSession());
-
-    if (data && data.session) {
-      message("You are already signed in. Opening dashboard...");
-      window.location.replace("./index.html");
-    } else if (data) {
-      message("Ready. Sign in or create an account.");
-    }
-  }
-
-  checkSession();
-})();
-</script></body>
+<body class="auth-page">
+  <main class="auth-shell">
+    <a class="brand brand-auth" href="login.html" aria-label="Kevid Systems home">
+      <span class="brand-mark">K</span><span>kevid<span class="brand-light">systems</span></span>
+    </a>
+    <section class="auth-card">
+      <div class="eyebrow">CUSTOMER AUTOMATION PLATFORM</div>
+      <h1 id="auth-heading">Welcome back</h1>
+      <p class="muted" id="auth-subheading">Sign in to manage your customer conversations.</p>
+      <div id="auth-notice" class="notice hidden" role="status" aria-live="polite"></div>
+      <form id="auth-form">
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" minlength="6" placeholder="At least 6 characters" required>
+        <label id="confirm-label" for="confirm-password" class="hidden">Confirm password</label>
+        <input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password" minlength="6" placeholder="Repeat your password" class="hidden">
+        <button id="submit-button" class="button button-primary button-full" type="submit">Sign in</button>
+      </form>
+      <p class="auth-switch"><span id="switch-copy">New to Kevid Systems?</span>
+        <button id="switch-mode" class="text-button" type="button">Create account</button>
+      </p>
+      <p class="auth-footnote">Your workspace is linked to your account. Use an email address you can access.</p>
+    </section>
+    <p class="copyright">© <span id="year"></span> Kevid Systems</p>
+  </main>
+</body>
 </html>
