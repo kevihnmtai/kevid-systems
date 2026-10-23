@@ -1,270 +1,172 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Kevid Systems | Account</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 20px;
-      background: #0b1020;
-      color: #f5f7ff;
-      font-family: Arial, sans-serif;
-    }
-    .card {
-      width: 100%;
-      max-width: 410px;
-      padding: 28px;
-      border: 1px solid #27334c;
-      border-radius: 18px;
-      background: #131b2d;
-    }
-    h1 { margin-top: 0; font-size: 25px; }
-    p { color: #aab6cc; line-height: 1.5; }
-    label { display: block; margin: 16px 0 7px; }
-    input {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #34425e;
-      border-radius: 9px;
-      background: #0b1020;
-      color: white;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 15px;
-      border: 0;
-      border-radius: 9px;
-      background: #7c6cff;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .secondary { background: #27334c; }
-    #status { overflow-wrap: anywhere; font-size: 14px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kevid Systems | Account</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:#050819;color:#f5f7ff;font-family:Arial,sans-serif}
+.card{width:100%;max-width:440px;padding:28px;border:1px solid #29334c;border-radius:18px;background:#0b1025}
+h1{font-size:27px}
+p{color:#aab6cc;line-height:1.5}
+label{display:block;margin:17px 0 7px}
+input{width:100%;padding:13px;border:1px solid #34425e;border-radius:9px;background:#10172b;color:white;font-size:16px}
+button{width:100%;padding:13px;margin-top:14px;border:0;border-radius:9px;background:#4935d5;color:white;font-size:16px;font-weight:bold}
+button.secondary{background:#23314c}
+button:disabled{opacity:.6}
+#status{overflow-wrap:anywhere;font-size:14px}
+</style>
 </head>
 <body>
-  <main class="card">
-    <h1>Kevid Systems</h1>
-    <p>Sign in or create an account to access your workspace.</p>
+<main class="card">
+<h1>Kevid Systems</h1>
+<p>Sign in or create an account to access your workspace.</p><form id="authForm">
+<label for="email">Email address</label>
+<input id="email" type="email" autocomplete="email" required maxlength="254"><label for="password">Password</label>
+<input id="password" type="password" autocomplete="current-password" minlength="8" required>
 
-    <form id="authForm">
-      <label for="email">Email address</label>
-      <input id="email" type="email" autocomplete="email"
-             required maxlength="254">
+<button id="login" type="submit">Sign in</button>
+<button id="signup" class="secondary" type="button">Create account</button>
 
-      <label for="password">Password</label>
-      <input id="password" type="password"
-             autocomplete="current-password"
-             minlength="8" required>
+</form><p id="status" role="status" aria-live="polite">Loading authentication...</p>
+</main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+(() => {
+  const URL = "YOUR_SUPABASE_PROJECT_URL";
+  const KEY = "YOUR_SUPABASE_PUBLISHABLE_KEY";
 
-      <button type="submit">Sign in</button>
-      <button type="button" class="secondary" id="signup">
-        Create account
-      </button>
-    </form>
+  const email = document.getElementById("email");
+  const password = document.getElementById("password");
+  const form = document.getElementById("authForm");
+  const login = document.getElementById("login");
+  const signup = document.getElementById("signup");
+  const status = document.getElementById("status");
 
-    <p id="status" role="status" aria-live="polite"></p>
-  </main>
+  function message(text) {
+    status.textContent = text;
+  }
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    const SUPABASE_URL = "https://bkpyzrxxboggqewawxdb.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2";
+  if (!window.supabase) {
+    message("ERROR: Supabase library failed to load. Check your internet connection and refresh.");
+    return;
+  }
 
-    const status = document.getElementById("status");
-    const form = document.getElementById("authForm");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
+  if (URL.includes("YOUR_") || KEY.includes("YOUR_")) {
+    message("ERROR: Add your Supabase Project URL and Publishable key to login.html.");
+    return;
+  }
 
-    const configured =
-      SUPABASE_URL.startsWith("https://") &&
-      SUPABASE_URL.endsWith(".supabase.co") &&
-      SUPABASE_KEY.length > 20 &&
-      !SUPABASE_KEY.includes("sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2");
+  let client;
 
-    let client = null;
+  try {
+    client = window.supabase.createClient(URL, KEY);
+  } catch (error) {
+    message("ERROR initializing Supabase: " + error.message);
+    return;
+  }
 
-    if (configured && window.supabase) {
-      client = window.supabase.createClient(
-        https://bkpyzrxxboggqewawxdb.supabase.co,
-        sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2
-      );
-    } else {
-      status.textContent =
-        "Setup incomplete: check your Supabase URL, publishable key and internet connection.";
+  function setBusy(busy) {
+    login.disabled = busy;
+    signup.disabled = busy;
+    login.textContent = busy ? "Please wait..." : "Sign in";
+  }
+
+  async function safeRequest(operation) {
+    setBusy(true);
+
+    try {
+      const result = await operation();
+
+      if (result.error) {
+        message("ERROR: " + result.error.message);
+        return null;
+      }
+
+      return result.data;
+    } catch (error) {
+      message("ERROR: " + (error.message || "Request failed. Check your internet connection."));
+      return null;
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const address = email.value.trim();
+    const pass = password.value;
+
+    message("Signing in...");
+
+    const data = await safeRequest(() =>
+      client.auth.signInWithPassword({
+        email: address,
+        password: pass
+      })
+    );
+
+    if (!data) return;
+
+    if (!data.session) {
+      message("Sign-in returned no active session. Check your Supabase authentication settings.");
+      return;
     }
 
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      if (!client) return;
+    message("Signed in successfully. Opening dashboard...");
+    window.location.assign("./index.html");
+  });
 
-      status.textContent = "Signing in…";
+  signup.addEventListener("click", async () => {
+    const address = email.value.trim();
+    const pass = password.value;
 
-      const { data, error } = await client.auth.signInWithPassword({
-        email: emailInput.value.trim(),
-        password: passwordInput.value
-      });
+    if (!address || !email.checkValidity()) {
+      message("Enter a valid email address first.");
+      email.focus();
+      return;
+    }
 
-      if (error) {
-        status.textContent = error.message;
-        return;
-      }
+    if (pass.length < 8) {
+      message("Use a password containing at least 8 characters.");
+      password.focus();
+      return;
+    }
 
-      status.textContent = "Signed in. Opening your dashboard…";
-      window.location.href = "./index.html";
-    });
+    message("Creating your account...");
 
-    document.getElementById("signup").addEventListener("click", async () => {
-      if (!client) return;
-
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
-
-      if (!email || password.length < 8) {
-        status.textContent =
-          "Enter a valid email and a password of at least 8 characters.";
-        return;
-      }
-
-      status.textContent = "Creating your account…";
-
-      const { data, error } = await client.auth.signUp({
-        email,
-        password,
+    const data = await safeRequest(() =>
+      client.auth.signUp({
+        email: address,
+        password: pass,
         options: {
           emailRedirectTo: window.location.origin +
             window.location.pathname.replace(/login\.html$/, "index.html")
         }
-      });
+      })
+    );
 
-      if (error) {
-        status.textContent = error.message;
-        return;
-      }
+    if (!data) return;
 
-      status.textContent = data.session
-        ? "Account created. You can now sign in."
-        : "Account request submitted. Check your email for a verification link if confirmation is enabled.";
-    });
-
-    async function checkExistingSession() {
-      if (!client) return;
-
-      const { data, error } = await client.auth.getSession();
-
-      if (error) {
-        status.textContent = "Could not check your session. Please try again.";
-        return;
-      }
-
-      if (data.session) {
-        status.textContent = "You're already signed in. Opening your dashboard…";
-        window.location.href = "./index.html";
-      }
-    }
-
-    checkExistingSession();
-  </script>
-<script>
-(() => {
-  const SUPABASE_URL = "https://bkpyzrxxboggqewawxdb.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2";
-
-  if (!window.supabase) {
-    document.body.innerHTML =
-      "<h2>Unable to load Kevid Systems. Check your internet connection and refresh.</h2>";
-    return;
-  }
-
-  if (
-    SUPABASE_URL.includes("https://bkpyzrxxboggqewawxdb.supabase.co") ||
-    SUPABASE_KEY.includes("sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2")
-  ) {
-    document.body.innerHTML =
-      "<h2>Setup incomplete. Add your Supabase project details.</h2>";
-    return;
-  }
-
-  const client = window.supabase.createClient(
-    https://bkpyzrxxboggqewawxdb.supabase.co,
-    sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2
-  );
-
-  let redirecting = false;
-
-  async function protectDashboard() {
-    const { data, error } = await client.auth.getSession();
-
-    if (error) {
-      document.body.innerHTML =
-        "<h2>Unable to verify your session. Refresh and try again.</h2>";
-      return;
-    }
-
-    if (!data.session) {
-      window.location.replace("./login.html");
-      return;
-    }
-
-    addLogoutButton();
-  }
-
-  function addLogoutButton() {
-    if (document.getElementById("kevid-logout")) return;
-
-    const button = document.createElement("button");
-    button.id = "kevid-logout";
-    button.textContent = "Log out";
-
-    Object.assign(button.style, {
-      position: "fixed",
-      top: "12px",
-      right: "12px",
-      zIndex: "99999",
-      padding: "10px 16px",
-      borderRadius: "8px",
-      border: "1px solid #475569",
-      background: "#172033",
-      color: "#ffffff",
-      cursor: "pointer"
-    });
-
-    button.addEventListener("click", async () => {
-      button.disabled = true;
-      button.textContent = "Logging out...";
-
-      const { error } = await client.auth.signOut();
-
-      if (error) {
-        button.disabled = false;
-        button.textContent = "Log out";
-        alert("Logout failed. Please try again.");
-        return;
-      }
-
-      window.location.replace("./login.html");
-    });
-
-    document.body.appendChild(button);
-  }
-
-  client.auth.onAuthStateChange((event, session) => {
-    if (event === "SIGNED_OUT" && !redirecting) {
-      redirecting = true;
-      window.location.replace("./login.html");
+    if (data.session) {
+      message("Account created and signed in. Opening dashboard...");
+      window.location.assign("./index.html");
+    } else {
+      message("Registration request completed. If email confirmation is enabled, check your inbox and spam folder. If this address was already registered, use Sign in instead.");
     }
   });
 
-  protectDashboard();
+  async function checkSession() {
+    const data = await safeRequest(() => client.auth.getSession());
+
+    if (data && data.session) {
+      message("You are already signed in. Opening dashboard...");
+      window.location.replace("./index.html");
+    } else if (data) {
+      message("Ready. Sign in or create an account.");
+    }
+  }
+
+  checkSession();
 })();
-</script>
-</body>
+</script></body>
 </html>
