@@ -51,14 +51,14 @@ button:disabled{opacity:.6}
   }
 
   if (URL.includes("https://bkpyzrxxboggqewawxdb.supabase.co") || KEY.includes("sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2")) {
-    message("ERROR: Add your Supabase Project URL and Publishable key to login.html.");
+    message("ERROR: https://bkpyzrxxboggqewawxdb.supabase.co, and sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2 ");
     return;
   }
 
   let client;
 
   try {
-    client = window.supabase.createClient(URL, KEY);
+    client = window.supabase.createClient(https://bkpyzrxxboggqewawxdb.supabase.co, sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2);
   } catch (error) {
     message("ERROR initializing Supabase: " + error.message);
     return;
