@@ -88,14 +88,14 @@
       SUPABASE_URL.startsWith("https://") &&
       SUPABASE_URL.endsWith(".supabase.co") &&
       SUPABASE_KEY.length > 20 &&
-      !SUPABASE_KEY.includes("YOUR_");
+      !SUPABASE_KEY.includes("sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2");
 
     let client = null;
 
     if (configured && window.supabase) {
       client = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
+        https://bkpyzrxxboggqewawxdb.supabase.co,
+        sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2
       );
     } else {
       status.textContent =
@@ -175,8 +175,8 @@
   </script>
 <script>
 (() => {
-  const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
-  const SUPABASE_KEY = "YOUR_SUPABASE_PUBLISHABLE_KEY";
+  const SUPABASE_URL = "https://bkpyzrxxboggqewawxdb.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2";
 
   if (!window.supabase) {
     document.body.innerHTML =
@@ -185,8 +185,8 @@
   }
 
   if (
-    SUPABASE_URL.includes("YOUR_") ||
-    SUPABASE_KEY.includes("YOUR_")
+    SUPABASE_URL.includes("https://bkpyzrxxboggqewawxdb.supabase.co") ||
+    SUPABASE_KEY.includes("sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2")
   ) {
     document.body.innerHTML =
       "<h2>Setup incomplete. Add your Supabase project details.</h2>";
@@ -194,8 +194,8 @@
   }
 
   const client = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
+    https://bkpyzrxxboggqewawxdb.supabase.co,
+    sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2
   );
 
   let redirecting = false;
