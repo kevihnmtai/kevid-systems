@@ -16,8 +16,8 @@
   }
   function configReady() {
     return cfg.https://xjengkmblekiqzptguxa.supabase.co && cfg.sb_publishable_RsDjWubmkDEAC3lRofH0Lg_SCmxcXRE &&
-      !cfg.SUPABASE_URL.includes("https://xjengkmblekiqzptguxa.supabase.co") &&
-      !cfg.SUPABASE_ANON_KEY.includes("sb_publishable_RsDjWubmkDEAC3lRofH0Lg_SCmxcXRE");
+      !cfg.https://xjengkmblekiqzptguxa.supabase.co.includes("https://xjengkmblekiqzptguxa.supabase.co") &&
+      !cfg.sb_publishable_RsDjWubmkDEAC3lRofH0Lg_SCmxcXRE.includes("sb_publishable_RsDjWubmkDEAC3lRofH0Lg_SCmxcXRE");
   }
   function setMode(signup) {
     isSignup = signup;
@@ -37,7 +37,7 @@
   async function init() {
     $("year").textContent = new Date().getFullYear();
     if (!configReady() || !window.supabase) {
-      showNotice("Setup required: add your Supabase project URL and publishable/anon key in config.js, then reload.");
+      showNotice("Setup required: https://xjengkmblekiqzptguxa.supabase.co and sb_publishable_RsDjWubmkDEAC3lRofH0Lg_SCmxcXRE in config.js, then reload.");
       $("submit-button").disabled = true;
       return;
     }
