@@ -31,8 +31,8 @@ button:disabled{opacity:.6}
 </form><p id="status" role="status" aria-live="polite">Loading authentication...</p>
 </main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 (() => {
-  const URL = "YOUR_SUPABASE_PROJECT_URL";
-  const KEY = "YOUR_SUPABASE_PUBLISHABLE_KEY";
+  const URL = "https://bkpyzrxxboggqewawxdb.supabase.co";
+  const KEY = "sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2";
 
   const email = document.getElementById("email");
   const password = document.getElementById("password");
@@ -50,7 +50,7 @@ button:disabled{opacity:.6}
     return;
   }
 
-  if (URL.includes("YOUR_") || KEY.includes("YOUR_")) {
+  if (URL.includes("https://bkpyzrxxboggqewawxdb.supabase.co") || KEY.includes("sb_publishable_eI71VNroyGtyP64V20cSGg_MJd7t1a2")) {
     message("ERROR: Add your Supabase Project URL and Publishable key to login.html.");
     return;
   }
