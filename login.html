@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kevid Systems | Account</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: #0b1020;
+      color: #f5f7ff;
+      font-family: Arial, sans-serif;
+    }
+    .card {
+      width: 100%;
+      max-width: 410px;
+      padding: 28px;
+      border: 1px solid #27334c;
+      border-radius: 18px;
+      background: #131b2d;
+    }
+    h1 { margin-top: 0; font-size: 25px; }
+    p { color: #aab6cc; line-height: 1.5; }
+    label { display: block; margin: 16px 0 7px; }
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #34425e;
+      border-radius: 9px;
+      background: #0b1020;
+      color: white;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      border: 0;
+      border-radius: 9px;
+      background: #7c6cff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .secondary { background: #27334c; }
+    #status { overflow-wrap: anywhere; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Kevid Systems</h1>
+    <p>Sign in or create an account to access your workspace.</p>
+
+    <form id="authForm">
+      <label for="email">Email address</label>
+      <input id="email" type="email" autocomplete="email"
+             required maxlength="254">
+
+      <label for="password">Password</label>
+      <input id="password" type="password"
+             autocomplete="current-password"
+             minlength="8" required>
+
+      <button type="submit">Sign in</button>
+      <button type="button" class="secondary" id="signup">
+        Create account
+      </button>
+    </form>
+
+    <p id="status" role="status" aria-live="polite"></p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+    const SUPABASE_KEY = "YOUR_SUPABASE_PUBLISHABLE_KEY";
+
+    const status = document.getElementById("status");
+    const form = document.getElementById("authForm");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+
+    const configured =
+      SUPABASE_URL.startsWith("https://") &&
+      SUPABASE_URL.endsWith(".supabase.co") &&
+      SUPABASE_KEY.length > 20 &&
+      !SUPABASE_KEY.includes("YOUR_");
+
+    let client = null;
+
+    if (configured && window.supabase) {
+      client = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+    } else {
+      status.textContent =
+        "Setup incomplete: check your Supabase URL, publishable key and internet connection.";
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!client) return;
+
+      status.textContent = "Signing in…";
+
+      const { data, error } = await client.auth.signInWithPassword({
+        email: emailInput.value.trim(),
+        password: passwordInput.value
+      });
+
+      if (error) {
+        status.textContent = error.message;
+        return;
+      }
+
+      status.textContent = "Signed in. Opening your dashboard…";
+      window.location.href = "./index.html";
+    });
+
+    document.getElementById("signup").addEventListener("click", async () => {
+      if (!client) return;
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || password.length < 8) {
+        status.textContent =
+          "Enter a valid email and a password of at least 8 characters.";
+        return;
+      }
+
+      status.textContent = "Creating your account…";
+
+      const { data, error } = await client.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: window.location.origin +
+            window.location.pathname.replace(/login\.html$/, "index.html")
+        }
+      });
+
+      if (error) {
+        status.textContent = error.message;
+        return;
+      }
+
+      status.textContent = data.session
+        ? "Account created. You can now sign in."
+        : "Account request submitted. Check your email for a verification link if confirmation is enabled.";
+    });
+
+    async function checkExistingSession() {
+      if (!client) return;
+
+      const { data, error } = await client.auth.getSession();
+
+      if (error) {
+        status.textContent = "Could not check your session. Please try again.";
+        return;
+      }
+
+      if (data.session) {
+        status.textContent = "You're already signed in. Opening your dashboard…";
+        window.location.href = "./index.html";
+      }
+    }
+
+    checkExistingSession();
+  </script>
+</body>
+</html>
