@@ -173,5 +173,98 @@
 
     checkExistingSession();
   </script>
+<script>
+(() => {
+  const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+  const SUPABASE_KEY = "YOUR_SUPABASE_PUBLISHABLE_KEY";
+
+  if (!window.supabase) {
+    document.body.innerHTML =
+      "<h2>Unable to load Kevid Systems. Check your internet connection and refresh.</h2>";
+    return;
+  }
+
+  if (
+    SUPABASE_URL.includes("YOUR_") ||
+    SUPABASE_KEY.includes("YOUR_")
+  ) {
+    document.body.innerHTML =
+      "<h2>Setup incomplete. Add your Supabase project details.</h2>";
+    return;
+  }
+
+  const client = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  let redirecting = false;
+
+  async function protectDashboard() {
+    const { data, error } = await client.auth.getSession();
+
+    if (error) {
+      document.body.innerHTML =
+        "<h2>Unable to verify your session. Refresh and try again.</h2>";
+      return;
+    }
+
+    if (!data.session) {
+      window.location.replace("./login.html");
+      return;
+    }
+
+    addLogoutButton();
+  }
+
+  function addLogoutButton() {
+    if (document.getElementById("kevid-logout")) return;
+
+    const button = document.createElement("button");
+    button.id = "kevid-logout";
+    button.textContent = "Log out";
+
+    Object.assign(button.style, {
+      position: "fixed",
+      top: "12px",
+      right: "12px",
+      zIndex: "99999",
+      padding: "10px 16px",
+      borderRadius: "8px",
+      border: "1px solid #475569",
+      background: "#172033",
+      color: "#ffffff",
+      cursor: "pointer"
+    });
+
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      button.textContent = "Logging out...";
+
+      const { error } = await client.auth.signOut();
+
+      if (error) {
+        button.disabled = false;
+        button.textContent = "Log out";
+        alert("Logout failed. Please try again.");
+        return;
+      }
+
+      window.location.replace("./login.html");
+    });
+
+    document.body.appendChild(button);
+  }
+
+  client.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_OUT" && !redirecting) {
+      redirecting = true;
+      window.location.replace("./login.html");
+    }
+  });
+
+  protectDashboard();
+})();
+</script>
 </body>
 </html>
