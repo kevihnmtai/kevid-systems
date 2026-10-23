@@ -15,9 +15,9 @@
     notice.className = "notice hidden";
   }
   function configReady() {
-    return cfg.SUPABASE_URL && cfg.SUPABASE_ANON_KEY &&
-      !cfg.SUPABASE_URL.includes("PASTE_") &&
-      !cfg.SUPABASE_ANON_KEY.includes("PASTE_");
+    return cfg.https://xjengkmblekiqzptguxa.supabase.co && cfg.sb_publishable_RsDjWubmkDEAC3lRofH0Lg_SCmxcXRE &&
+      !cfg.SUPABASE_URL.includes("https://xjengkmblekiqzptguxa.supabase.co") &&
+      !cfg.SUPABASE_ANON_KEY.includes("sb_publishable_RsDjWubmkDEAC3lRofH0Lg_SCmxcXRE");
   }
   function setMode(signup) {
     isSignup = signup;
@@ -41,7 +41,7 @@
       $("submit-button").disabled = true;
       return;
     }
-    supabase = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY, {
+    supabase = window.supabase.createClient(cfg.https://xjengkmblekiqzptguxa.supabase.co, cfg.sb_publishable_RsDjWubmkDEAC3lRofH0Lg_SCmxcXRE, {
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
     });
     try {
